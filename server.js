@@ -1,9 +1,15 @@
 const express = require('express');
-const app = express();
 const http = require('http');
-const server = http.createServer(app);
+const path = require('path');
 const { Server } = require('socket.io');
 
+// Load the app (REST APIs and Angular frontend config)
+const app = require('./app');
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// WebSocket server
 const io = new Server(server, {
   cors: {
     origin: ['http://localhost:4200', 'https://tanklevel.onrender.com'],
@@ -11,15 +17,10 @@ const io = new Server(server, {
   }
 });
 
-// Your REST API
-const TestApi = require('./route/testapi');
-app.use('/api/user', TestApi);
-
-// WebSocket connection
+// WebSocket logic
 io.on('connection', (socket) => {
   console.log('🟢 WebSocket connected');
 
-  // You can send live data here
   const tankData = [
     {
       tankid: 'FM002',
@@ -29,13 +30,13 @@ io.on('connection', (socket) => {
 
   socket.emit('equipment-update', tankData);
 
-  // Optionally, send updates every few seconds
   setInterval(() => {
     socket.emit('equipment-update', tankData);
   }, 1000);
 });
 
-// Start server
-server.listen(process.env.PORT || 4000, () => {
-  console.log('🚀 Server running');
+// Start the server
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

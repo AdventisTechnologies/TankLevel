@@ -26,16 +26,17 @@ app.use(
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.static(path.join(__dirname, 'tanklevel/browser')));
-// ✅ Register API routes BEFORE Angular static serving
+
+// Serve Angular build
+app.use(express.static(path.join(__dirname, 'tanklevel', 'browser')));
+
+// ✅ API routes
 app.use('/api/user', TestApi);
 
-// // ✅ Serve Angular build
-// app.use(express.static(path.join(__dirname, 'tanklevel', 'browser')));
+// Fallback for Angular routing (should be last)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'tanklevel', 'browser', 'index.html'));
+});
 
-// // ✅ Handle SPA routes (must come LAST)
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'tanklevel', 'browser', 'index.html'));
-// });
 
 module.exports = app;
