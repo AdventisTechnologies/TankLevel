@@ -1,28 +1,31 @@
 const TestApi = require('../models/testapi');
 
-const TestApicreatepost = async (req, res) => {
-    console.log("🚨 CONTROLLER HIT");
-  console.log("BODY:", req.body);
-  try {
-    console.log('Incoming equipment:', req.body);
-    const {
-      tank_id,
-      level,
 
-    } = req.body;
-    
-    const result = new TestApi({
-   tankid:tank_id,
-   level:level,
-    });
-    // console.log("📦 Data saved");
-     await  result.save();
+const TestApicreatepost = async (req, res) => {
+  console.log("🚨 CONTROLLER HIT");
+  console.log("BODY:", req.body);
+
+  try {
+    const { tank_id, level } = req.body;
+
+    if (!tank_id || !level) {
+      return res.status(400).json({ error: 'tank_id and level are required' });
+    }
+
+    // ✅ Upsert: Update if exists, insert if not
+    const result = await TestApi.findOneAndUpdate(
+      { tankid: tank_id },
+      { tankid: tank_id, level },
+      { new: true, upsert: true } // ⬅️ upsert ensures insert if not exists
+    );
+
     return res.status(201).json({ message: 'Success', result });
   } catch (err) {
-    console.error('Error creating equipment:', err);
-    return res.status(400).json({ error: err.message });
+    console.error('❌ Error creating/updating equipment:', err);
+    return res.status(500).json({ error: err.message });
   }
 };
+
 
 
  const TestApiget = async (req, res) => {
