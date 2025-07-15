@@ -11,7 +11,7 @@ const TestApi = require('./route/testapi');
 
 
 
-const allowedOrigins = ['http://localhost:4200', 'https://testapi-e3x9.onrender.com'];
+const allowedOrigins = ['http://localhost:4200', 'https://tanklevel.onrender.com'];
 
 
 // CORS Middleware
