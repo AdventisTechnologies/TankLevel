@@ -1,4 +1,3 @@
-// app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
@@ -28,12 +27,15 @@ app.use(
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
-app.use(express.static(path.join(__dirname, 'tanklevel/browser')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'tanklevel/browser', 'index.html'));
-});
-
-
+// ✅ Register API routes BEFORE Angular static serving
 app.use('/api/user', TestApi);
+
+// ✅ Serve Angular build
+app.use(express.static(path.join(__dirname, 'tanklevel', 'browser')));
+
+// ✅ Handle SPA routes (must come LAST)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'tanklevel', 'browser', 'index.html'));
+});
 
 module.exports = app;
