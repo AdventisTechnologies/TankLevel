@@ -1,21 +1,49 @@
-
-
-const app = require('./app'); // Import the Express app
-const mongoose = require('mongoose');
+// server.js
 require('dotenv').config();
-mongoose.connect(process.env.MONGODB)
+const http = require('http');
+const app = require('./app');
+const mongoose = require('mongoose');
+const { Server } = require('socket.io');
+const Equipment = require('./models/testapi'); // adjust path if needed
 
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch(err => {
-    console.error('Error connecting to MongoDB:', err);
+const PORT = process.env.PORT || 4000;
+const MONGO_URL = process.env.MONGODB || 'mongodb://localhost:27017/cmms';
+
+const server = http.createServer(app);
+
+// Attach Socket.IO to the server
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:4200', 'https://tanklevel.onrender.com'],
+    methods: ['GET', 'POST'],
+    credentials: true,
+  }
+});
+
+// MongoDB connection
+mongoose.connect(MONGO_URL)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
+
+// WebSocket connection logic
+io.on('connection', (socket) => {
+  console.log('🔌 Client connected:', socket.id);
+
+  const interval = setInterval(async () => {
+    try {
+      const data = await Equipment.find({});
+      socket.emit('equipment-update', data);
+    } catch (err) {
+      console.error('Error fetching equipment:', err);
+    }
+  }, 5000); // every 5 seconds
+
+  socket.on('disconnect', () => {
+    console.log('❌ Client disconnected:', socket.id);
+    clearInterval(interval);
   });
+});
 
-
-
-const port = process.env.PORT || 3000; // Use a default port if PORT is not specified in the environment
-
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on port ${port}`);
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

@@ -1,3 +1,4 @@
+// app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
@@ -8,13 +9,8 @@ const path = require('path');
 
 const TestApi = require('./route/testapi');
 
-
-
-
 const allowedOrigins = ['http://localhost:4200', 'https://tanklevel.onrender.com'];
 
-
-// CORS Middleware
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -29,10 +25,8 @@ app.use(
   })
 );
 
-// ✅ Body parser middleware (only once, and with correct limits)
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-
 
 app.use(express.static(path.join(__dirname, 'tanklevel/browser')));
 
