@@ -29,6 +29,10 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 app.use(express.static(path.join(__dirname, 'tanklevel/browser')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'tanklevel/browser', 'index.html'));
+});
+
 
 app.use('/api/user', TestApi);
 
