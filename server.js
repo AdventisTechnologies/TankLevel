@@ -6,6 +6,9 @@ const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const path = require('path');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // Route and model imports
 const TestApiRoutes = require('./route/testapi');
