@@ -7,9 +7,9 @@ TestApicreatepost,TestApiget, TestApiupdate, TestApidelete
 
 
 // router.post('/testapipost', TestApicreate);
-router.post('/testapipost', TestApicreatepost);
-router.get('/testapiget',TestApiget);
-router.put('/testapiupdate/:id',TestApiupdate);
-router.delete('/testapidelete/:id',TestApidelete);
+router.post('/tanklevelpost', TestApicreatepost);
+router.get('/tanklevelget',TestApiget);
+router.put('/tanklevelupdate/:id',TestApiupdate);
+router.delete('/tankleveldelete/:id',TestApidelete);
 
 module.exports = router;
