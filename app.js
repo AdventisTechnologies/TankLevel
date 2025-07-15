@@ -34,9 +34,9 @@ app.use(express.static(path.join(__dirname, 'tanklevel', 'browser')));
 app.use('/api/user', TestApi);
 
 // Fallback for Angular routing (should be last)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'tanklevel', 'browser', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'tanklevel', 'browser', 'index.html'));
+// });
 
 
 module.exports = app;
